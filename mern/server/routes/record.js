@@ -1,95 +1,84 @@
 import express from "express";
 
-//Connects to databse
+// This will help us connect to the database
 import db from "../db/connection.js";
 
-//Coverts the id from string to  ObjectID for the_id.
-import {ObjectId} from "mongodb";
+// This help convert the id from string to ObjectId for the _id.
+import { ObjectId } from "mongodb";
 
-//Router is being added for middleware and defining routes
+// router is an instance of the express router.
+// We use it to define our routes.
+// The router will be added as a middleware and will take control of requests starting with path /record.
 const router = express.Router();
 
-////ROUTES////
-
-//Route for getting all records.
-
-router.get("/",async (req, res) => {
-    //Records Collection within MongoDB
-    let collecction = await db.collection("records");
-    let results = await collection.find({}).toArray();
-    res.send(results).status(200);
+// This section will help you get a list of all the records.
+router.get("/", async (req, res) => {
+  let collection = await db.collection("records");
+  let results = await collection.find({}).toArray();
+  res.send(results).status(200);
 });
 
-//Route for getting a SINGULAR record by id.
+// This section will help you get a single record by id
+router.get("/:id", async (req, res) => {
+  let collection = await db.collection("records");
+  let query = { _id: new ObjectId(req.params.id) };
+  let result = await collection.findOne(query);
 
-router.get("/:id", async (req,res) => {
-let collection = await db.collection("records");
-let query = {_id: new ObjectId(req.params.id)};
-let result = await collection.findOne(query);
-
-if (!result) res.send("Not found").status(404);
-else res.send(result).status(200);
-
+  if (!result) res.send("Not found").status(404);
+  else res.send(result).status(200);
 });
 
-//Route for creating a new record.
-
-router.post("/",async (req,res) => {
-try {
+// This section will help you create a new record.
+router.post("/", async (req, res) => {
+  try {
     let newDocument = {
-        name: req.body.name,
-        position: req.body.position,
-        level: req.body.level,
-
+      name: req.body.name,
+      position: req.body.position,
+      level: req.body.level,
     };
     let collection = await db.collection("records");
     let result = await collection.insertOne(newDocument);
     res.send(result).status(204);
-} catch (err) {
+  } catch (err) {
     console.error(err);
     res.status(500).send("Error adding record");
-};
+  }
 });
 
-//Route for updating a record by id. 
-router.patch("/:id", async (req,res) =>{
-try {
+// This section will help you update a record by id.
+router.patch("/:id", async (req, res) => {
+  try {
     const query = { _id: new ObjectId(req.params.id) };
     const updates = {
-        $set: {
-            name: req.body.name,
-            position: req.body.position,
-            level: req.body.level,
-        },
+      $set: {
+        name: req.body.name,
+        position: req.body.position,
+        level: req.body.level,
+      },
     };
 
     let collection = await db.collection("records");
-    let result = await collection.updateOne (query, updates);
+    let result = await collection.updateOne(query, updates);
     res.send(result).status(200);
-} catch (err) {
+  } catch (err) {
     console.error(err);
     res.status(500).send("Error updating record");
-
-}
+  }
 });
 
-//Route for deleting a record by id.
-router.delete("/:id", async (req,res) => {
-try {
-    const query = { _id: new ObjectId(req.params.id)};
+// This section will help you delete a record
+router.delete("/:id", async (req, res) => {
+  try {
+    const query = { _id: new ObjectId(req.params.id) };
 
-    //added await not present within the tutorial
-
-    const collection = await db.collection("records");
+    const collection = db.collection("records");
     let result = await collection.deleteOne(query);
 
     res.send(result).status(200);
-} catch (err) {
+  } catch (err) {
     console.error(err);
     res.status(500).send("Error deleting record");
-
-}
-
+  }
 });
 
 export default router;
