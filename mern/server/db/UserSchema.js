@@ -1,3 +1,5 @@
+//FOR EMPLOYEES
+
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({

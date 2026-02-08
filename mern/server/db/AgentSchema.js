@@ -1,3 +1,4 @@
+//AGENT TABLE DATA FOR RECORDS WK7
 import mongoose from "mongoose";
 
 const agentSchema = new mongoose.Schema({
