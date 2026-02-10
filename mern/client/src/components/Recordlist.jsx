@@ -2,30 +2,17 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 /* ---------- Single Table Row ---------- */
+// Displays a single agent record as a table row
 const Record = ({ record, deleteRecord }) => (
   <tr className="border-b transition-colors hover:bg-muted/50">
-    <td className="p-4 align-middle">
-      {record.name}
-    </td>
-
-    <td className="p-4 align-middle">
-      {record.region}
-    </td>
-
-    <td className="p-4 align-middle">
-      {record.rating}
-    </td>
-
-    <td className="p-4 align-middle">
-      ${record.fee}
-    </td>
-
-    <td className="p-4 align-middle">
-      {record.sales}
-    </td>
-
+    <td className="p-4 align-middle">{record.name}</td>
+    <td className="p-4 align-middle">{record.region}</td>
+    <td className="p-4 align-middle">{record.rating}</td>
+    <td className="p-4 align-middle">${record.fee}</td>
+    <td className="p-4 align-middle">{record.sales}</td>
     <td className="p-4 align-middle">
       <div className="flex gap-2">
+        {/* Edit button navigates to the edit page for this agent */}
         <Link
           className="inline-flex items-center justify-center h-9 rounded-md px-3 border hover:bg-slate-100"
           to={`/edit/${record._id}`}
@@ -33,6 +20,7 @@ const Record = ({ record, deleteRecord }) => (
           Edit
         </Link>
 
+        {/* Delete button calls deleteRecord handler */}
         <button
           className="inline-flex items-center justify-center h-9 rounded-md px-3 border hover:bg-slate-100"
           type="button"
@@ -46,10 +34,16 @@ const Record = ({ record, deleteRecord }) => (
 );
 
 /* ---------- Record List ---------- */
+// Main component that fetches and displays all agents in a table
 export default function RecordList() {
+  // State for all agent records
   const [records, setRecords] = useState([]);
+  // Loading state for fetch
+  const [loading, setLoading] = useState(true);
+  // Error state for fetch
+  const [error, setError] = useState(null);
 
-  // Fetch agents once on load
+  // Fetch agents once on component mount
   useEffect(() => {
     async function getRecords() {
       try {
@@ -57,23 +51,43 @@ export default function RecordList() {
         if (!response.ok) {
           throw new Error("Failed to fetch agents");
         }
-        const data = await response.json();
-        setRecords(data);
-      } catch (error) {
-        console.error(error);
+
+        const json = await response.json();
+
+        // Update state with the array of agents from backend
+        if (json.success) {
+          setRecords(json.data); // <-- important: new API wraps data in json.data
+        } else {
+          throw new Error(json.message || "Unknown backend error");
+        }
+      } catch (err) {
+        console.error(err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
     }
 
     getRecords();
   }, []);
 
-  // Delete agent
+  // Delete agent by ID
   async function deleteRecord(id) {
-    await fetch(`http://localhost:5050/record/${id}`, {
-      method: "DELETE",
-    });
+    try {
+      const response = await fetch(`http://localhost:5050/record/${id}`, {
+        method: "DELETE",
+      });
 
-    setRecords((prev) => prev.filter((record) => record._id !== id));
+      if (!response.ok) {
+        throw new Error("Failed to delete agent");
+      }
+
+      // Remove deleted agent from state so UI updates
+      setRecords((prev) => prev.filter((record) => record._id !== id));
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete agent: " + err.message);
+    }
   }
 
   return (
@@ -97,7 +111,20 @@ export default function RecordList() {
             </thead>
 
             <tbody className="[&_tr:last-child]:border-0">
-              {records.length > 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan="6" className="p-4 text-center">
+                    Loading agents...
+                  </td>
+                </tr>
+              ) : error ? (
+                <tr>
+                  <td colSpan="6" className="p-4 text-center text-red-500">
+                    Error: {error}
+                  </td>
+                </tr>
+              ) : records.length > 0 ? (
+                // Map over the array of agents and render a row for each
                 records.map((record) => (
                   <Record
                     key={record._id}
