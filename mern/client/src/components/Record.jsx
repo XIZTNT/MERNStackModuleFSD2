@@ -96,13 +96,18 @@ export default function Record() {
 
         <div>
           <label className="block text-sm font-medium">Region</label>
-          <input
-            type="text"
+          <select
             value={form.region}
             onChange={(e) => updateForm({ region: e.target.value })}
             className="mt-1 block w-full rounded-md border p-2"
             required
-          />
+          >
+            <option value="">Select a region</option>
+            <option value="North">North</option>
+            <option value="South">South</option>
+            <option value="East">East</option>
+            <option value="West">West</option>
+          </select>
         </div>
 
         <div>
