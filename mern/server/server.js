@@ -1,29 +1,42 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import connectDB from "./db/connection.js";
+import dotenv from "dotenv";
 
-//Routes Imports
+// Routes Imports
 import records from "./routes/record.js";
 import login from "./routes/login.js";
+//Cookie refresh route for testing auth middleware
+import authrefresh from "./routes/authrefresh.js";
+//Logout to test cookie clearing
+import logout from "./routes/logout.js";
+
+//Load environment variables from config.env
+dotenv.config({ path: "./config.env" });
 
 const PORT = process.env.PORT || 5050;
 const app = express();
 
-//Middleware
-app.use(cors());
+// Middleware
+app.use(cors({
+    origin: "http://localhost:5173", // Vite frontend for cookies to pass
+    credentials: true
+}));
+//JWT Cookie Storage feature
 app.use(express.json());
+app.use(cookieParser()); // MUST be before routes
 
-//Connect to MongoDB
-connectDB()
+// Connect to MongoDB
+connectDB();
 
-//Routes initialized here
+// Routes initialized here
 app.use("/record", records);
-
 app.use("/login", login);
+app.use("/authrefresh", authrefresh);
+app.use("/logout", logout);
 
-//start the Express server
-
+// Start server
 app.listen(PORT, () => {
-
-    console.log(`Server is listening on port ${PORT}`)
+    console.log(`Server is listening on port ${PORT}`);
 });

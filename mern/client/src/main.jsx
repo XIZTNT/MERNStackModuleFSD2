@@ -4,10 +4,16 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import axios from "axios"; // 👈 add this
 import App from "./App";
 import Record from "./components/Record";
 import RecordList from "./components/RecordList";
 import "./index.css";
+
+//Compoennt to send cookies
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = "http://localhost:5050"; 
+//base URL is optional, but look into further whether it helps to have
 
 const router = createBrowserRouter([
   {

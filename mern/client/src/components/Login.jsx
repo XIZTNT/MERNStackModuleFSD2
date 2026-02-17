@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { loginUser } from "../services/loginService";
 
 const Login = ({ onLoginSuccess, onLoginFail }) => {
   const [email, setEmail] = useState("");
@@ -8,19 +9,10 @@ const Login = ({ onLoginSuccess, onLoginFail }) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5050/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (response.status === 200) {
-        onLoginSuccess();
-      } else {
-        onLoginFail();
-      }
+      const data = await loginUser(email, password);
+      console.log("Logged in user:", data.user);
+      onLoginSuccess();
     } catch (err) {
-      console.error(err);
       onLoginFail();
     }
   };
