@@ -6,15 +6,22 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:5050/logout", {
+      // 1️⃣ Call backend directly (full URL, not relying on Vite proxy)
+      const res = await fetch("http://localhost:5050/logout", {
         method: "POST",
-        credentials: "include", // VERY IMPORTANT
+        credentials: "include", // VERY IMPORTANT for cookies
       });
 
-      // After clearing cookies, redirect to login
+      // 2️⃣ Check response OK
+      if (!res.ok) {
+        throw new Error(`Logout failed with status ${res.status}`);
+      }
+
+      // 3️⃣ Redirect to login page after successful logout
       navigate("/login");
     } catch (err) {
       console.error("Logout failed:", err);
+      // Optional: display a toast/alert to the user
     }
   };
 

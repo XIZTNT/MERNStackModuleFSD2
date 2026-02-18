@@ -11,7 +11,6 @@ export default defineConfig({
     proxy: {
       "/login": "http://localhost:5050",
       "/record": "http://localhost:5050",
-      "/logout": "http://localhost:5050",
     },
   },
 });

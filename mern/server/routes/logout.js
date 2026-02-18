@@ -5,15 +5,19 @@ router.post("/", (req, res) => {
   res
     .clearCookie("accessToken", {
       httpOnly: true,
-      secure: false,
+      secure: false, 
       sameSite: "lax",
+      path: "/",          // ← important for clearing the cookie in all routes
     })
     .clearCookie("refreshToken", {
       httpOnly: true,
       secure: false,
       sameSite: "lax",
+      path: "/",
     })
     .status(200)
+    .set("Access-Control-Allow-Credentials", "true") // small tweak
+    .set("Access-Control-Allow-Origin", "http://localhost:5173") // small tweak
     .json({ message: "Logged out successfully" });
 });
 

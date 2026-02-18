@@ -1,45 +1,37 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
-import axios from "axios"; // 👈 add this
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import axios from "axios";
 import App from "./App";
 import Record from "./components/Record";
 import RecordList from "./components/RecordList";
+import Login from "./components/Login"; // 👈 import login component
 import "./index.css";
 
-//Compoennt to send cookies
+// Axios setup for cookies
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = "http://localhost:5050"; 
-//base URL is optional, but look into further whether it helps to have
+axios.defaults.baseURL = "http://localhost:5050";
 
 const router = createBrowserRouter([
+  // Login route (top-level)
+  {
+    path: "/login",
+    element: <Login />,
+  },
+
+  // Authorized routes (nested under App)
   {
     path: "/",
     element: <App />,
     children: [
       {
-        path: "/",
+        path: "/",           // default home
         element: <RecordList />,
       },
-    ],
-  },
-  {
-    path: "/edit/:id",
-    element: <App />,
-    children: [
       {
         path: "/edit/:id",
         element: <Record />,
       },
-    ],
-  },
-  {
-    path: "/create",
-    element: <App />,
-    children: [
       {
         path: "/create",
         element: <Record />,
