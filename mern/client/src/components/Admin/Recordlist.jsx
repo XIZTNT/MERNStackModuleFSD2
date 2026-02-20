@@ -15,7 +15,7 @@ const Record = ({ record, deleteRecord }) => (
         {/* Edit button navigates to the edit page for this agent */}
         <Link
           className="inline-flex items-center justify-center h-9 rounded-md px-3 border hover:bg-slate-100"
-          to={`/edit/${record._id}`}
+          to={`/admin/edit/${record._id}`}
         >
           Edit
         </Link>

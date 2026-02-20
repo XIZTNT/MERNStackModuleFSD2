@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { loginUser } from "../services/loginService";
+import { useNavigate } from "react-router-dom";
+import { loginUser } from "../../services/loginService";
 
-const Login = ({ onLoginSuccess, onLoginFail }) => {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate(); // redirect after login
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -11,9 +13,14 @@ const Login = ({ onLoginSuccess, onLoginFail }) => {
     try {
       const data = await loginUser(email, password);
       console.log("Logged in user:", data.user);
-      onLoginSuccess();
+
+      // Correct credentials → go to admin dashboard
+      navigate("/admin");
     } catch (err) {
-      onLoginFail();
+      console.error("Login failed:", err);
+
+      // Wrong credentials → go to Unauthorized page
+      navigate("/unauthorized");
     }
   };
 
@@ -30,6 +37,7 @@ const Login = ({ onLoginSuccess, onLoginFail }) => {
         className="w-full p-2 mb-4 border rounded"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
+        required
       />
 
       <input
@@ -38,6 +46,7 @@ const Login = ({ onLoginSuccess, onLoginFail }) => {
         className="w-full p-2 mb-4 border rounded"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        required
       />
 
       <button

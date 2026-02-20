@@ -3,9 +3,11 @@ import * as ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import axios from "axios";
 import App from "./App";
-import Record from "./components/Record";
-import RecordList from "./components/RecordList";
-import Login from "./components/Login"; // 👈 import login component
+import Home from "./components/Public/Home";
+import Record from "./components/Admin/Record";
+import RecordList from "./components/Admin/Recordlist";
+import Login from "./components/Admin/Login";
+import Unauthorized from "./components/Admin/Unauthorized"; // import it
 import "./index.css";
 
 // Axios setup for cookies
@@ -13,29 +15,25 @@ axios.defaults.withCredentials = true;
 axios.defaults.baseURL = "http://localhost:5050";
 
 const router = createBrowserRouter([
-  // Login route (top-level)
-  {
-    path: "/login",
-    element: <Login />,
-  },
-
-  // Authorized routes (nested under App)
   {
     path: "/",
+    element: <Home />,
+  },
+  {
+    path: "/admin/login",
+    element: <Login />,
+  },
+  {
+    path: "/unauthorized", // <-- add this
+    element: <Unauthorized onBackToLogin={() => window.location.href = "/admin/login"} />,
+  },
+  {
+    path: "/admin",
     element: <App />,
     children: [
-      {
-        path: "/",           // default home
-        element: <RecordList />,
-      },
-      {
-        path: "/edit/:id",
-        element: <Record />,
-      },
-      {
-        path: "/create",
-        element: <Record />,
-      },
+      { index: true, element: <RecordList /> },
+      { path: "create", element: <Record /> },
+      { path: "edit/:id", element: <Record /> },
     ],
   },
 ]);

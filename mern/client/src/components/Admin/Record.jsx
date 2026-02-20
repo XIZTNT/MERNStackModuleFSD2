@@ -26,7 +26,7 @@ export default function Record() {
 
       if (!response.ok) {
         console.error("Failed to fetch agent");
-        navigate("/");
+        navigate("/admin");
         return;
       }
 
@@ -69,7 +69,7 @@ export default function Record() {
         throw new Error("Request failed");
       }
 
-      navigate("/");
+      navigate("/admin");
     } catch (err) {
       console.error("Error saving agent:", err);
     }
