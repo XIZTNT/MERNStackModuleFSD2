@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 
 const auth = (req, res, next) => {
   try {
-    const token = req.cookies.accessToken; // ✅ match login cookie name
+    const token = req.cookies.accessToken; //Match login cookie name
 
     if (!token) {
       return res.status(401).json({ message: "No token provided" });

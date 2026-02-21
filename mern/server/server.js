@@ -23,6 +23,7 @@ app.use(cors({
     origin: "http://localhost:5173", // Vite frontend for cookies to pass
     credentials: true
 }));
+
 //JWT Cookie Storage feature
 app.use(express.json());
 app.use(cookieParser()); // MUST be before routes

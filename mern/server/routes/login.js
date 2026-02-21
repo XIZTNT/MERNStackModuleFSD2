@@ -17,7 +17,7 @@ router.post("/", async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // 1️⃣ Look up user by email
+    // 1. Look up user by email
     const user = await User.findOne({ email });
 
     // If user does not exist → reject
@@ -25,13 +25,13 @@ router.post("/", async (req, res) => {
       return res.status(401).json({ message: "Unauthorized: user not found" });
     }
 
-    // 2️⃣ Validate password
-    // NOTE: Currently plain text comparison (replace with bcrypt in production)
+    // 2️. Validate password
+    // NOTE: Currently plain text comparison (can replace with bcrypt in production)
     if (user.password !== password) {
       return res.status(401).json({ message: "Unauthorized: wrong password" });
     }
 
-    // 3️⃣ Generate Access Token
+    // 3️. Generate Access Token
     // - Contains user id + role
     // - Expires in 15 minutes
     // - Used to access protected routes
@@ -41,7 +41,7 @@ router.post("/", async (req, res) => {
       { expiresIn: "15m" }
     );
 
-    // 4️⃣ Generate Refresh Token
+    // 4️. Generate Refresh Token
     // - Contains user id
     // - Expires in 24 hours
     // - Used to issue new access tokens
@@ -54,7 +54,7 @@ router.post("/", async (req, res) => {
     // Cookie lifespan: 24 hours
     const ONE_DAY = 24 * 60 * 60 * 1000;
 
-    // 5️⃣ Send tokens as secure httpOnly cookies
+    // 5️. Send tokens as secure httpOnly cookies
     // - httpOnly prevents JS access (XSS protection)
     // - sameSite helps mitigate CSRF
     // - maxAge ensures browser deletes after 24h
