@@ -8,7 +8,7 @@ const auth = (req, res, next) => {
       return res.status(401).json({ message: "No token provided" });
     }
 
-    const decoded = jwt.verify(token, process.env.ACCESS_SECRET); // ✅ match secret name
+    const decoded = jwt.verify(token, process.env.ACCESS_SECRET); //ENV Materials
 
     req.user = decoded;
     next();

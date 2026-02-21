@@ -16,8 +16,8 @@ router.post("/", (req, res) => {
       path: "/",
     })
     .status(200)
-    .set("Access-Control-Allow-Credentials", "true") // small tweak
-    .set("Access-Control-Allow-Origin", "http://localhost:5173") // small tweak
+    .set("Access-Control-Allow-Credentials", "true")
+    .set("Access-Control-Allow-Origin", "http://localhost:5173") 
     .json({ message: "Logged out successfully" });
 });
 
